@@ -1,0 +1,16 @@
+[package]
+name = "test-task"
+version = "0.1.0"
+edition = "2021"
+publish = ["proxy"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[features]
+with_rayon = ["rayon"]
+with_tokio = ["tokio", "futures"]
+default = []
+[dependencies]
+rayon = {version ="*", optional = true}
+tokio = { version = "1", features=["full"], optional= true}
+futures = {version ="*", optional=true}
