@@ -13,8 +13,19 @@ where
         return iter;
       }
 
-      if item % 2 == 0 {
+      if item & 1 == 0 {
         item /= 2;
+      } else if item > (u64::MAX-1) / 3 {
+        println!("Warning: Overloading of max int. But I actually don't have instructions how to handle this");
+        println!("Warning: I will not try to create correct overload, without panic");
+        let bigger_item: u128 = item as u128; // Fast and dirty. 
+        let max = u64::MAX as u128 + 1 ;
+        let mut bigger_item = bigger_item * 3 + 1;
+        while bigger_item > max {
+          bigger_item %= max
+        }
+
+        item = bigger_item as u64;
       } else {
         item = item * 3 + 1;
       }
@@ -51,9 +62,26 @@ mod tests {
   }
 
   #[test]
+  fn some_more_iters() {
+    let arr = vec![100];
+    let result = routine(arr, 26);
+    assert_eq!(result, vec![25])
+  }
+
+  #[test]
+  fn test_overload() {
+    let arr = vec![u64::MAX - 1];
+    let result = routine(arr, 619);
+    assert_eq!(result, vec![618])
+  }
+
+  #[test]
   fn bigger_check() {
     let arr = vec![1, 2, 3, 100, 1, 2, 3, 100, 1, 2, 3, 100, 1, 2, 3, 100];
     let result = routine(arr, 8);
-    assert_eq!(result, vec![0, 1, 7, 88, 0, 1, 7, 88,0, 1, 7, 88, 0, 1, 7, 88,])
+    assert_eq!(
+      result,
+      vec![0, 1, 7, 88, 0, 1, 7, 88, 0, 1, 7, 88, 0, 1, 7, 88,]
+    )
   }
 }
